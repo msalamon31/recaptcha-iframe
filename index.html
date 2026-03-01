@@ -10,8 +10,12 @@
     var siteKey = new URLSearchParams(window.location.search).get('siteKey');
     console.log('iframe loaded, siteKey:', siteKey);
 
-    // Auto-execute as soon as grecaptcha is ready
     function executeRecaptcha() {
+      if (typeof grecaptcha === 'undefined') {
+        console.log('grecaptcha not ready, waiting...');
+        setTimeout(executeRecaptcha, 500);
+        return;
+      }
       grecaptcha.ready(function() {
         console.log('grecaptcha ready, rendering...');
         var widgetId = grecaptcha.render('captcha-container', {
@@ -38,8 +42,11 @@
       console.log('message received:', event.data);
     });
 
-    // Auto-execute on load
-    executeRecaptcha();
+    // Wait for page to fully load before executing
+    window.addEventListener('load', function() {
+      console.log('page loaded, executing recaptcha...');
+      executeRecaptcha();
+    });
   </script>
 </body>
 </html>
