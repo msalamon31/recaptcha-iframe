@@ -23,6 +23,7 @@
           size: 'invisible',
           callback: function(token) {
             console.log('token received');
+            console.log('token received at:', new Date().toISOString());
             window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
           },
           'expired-callback': function() {
