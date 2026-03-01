@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div id="captcha-container"></div>
+
+  <script>
+    var widgetId;
+    var siteKey = new URLSearchParams(window.location.search).get('siteKey');
+
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.action === 'executeCaptcha') {
+        grecaptcha.ready(function() {
+          if (widgetId === undefined) {
+            widgetId = grecaptcha.render('captcha-container', {
+              sitekey: siteKey,
+              size: 'invisible',
+              callback: function(token) {
+                window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
+              },
+              'expired-callback': function() {
+                window.parent.postMessage({ action: 'captchaExpired' }, '*');
+              },
+              'error-callback': function() {
+                window.parent.postMessage({ action: 'captchaError' }, '*');
+              }
+            });
+          }
+          grecaptcha.execute(widgetId);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
