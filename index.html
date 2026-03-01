@@ -7,37 +7,39 @@
   <div id="captcha-container"></div>
 
   <script>
-    var widgetId;
     var siteKey = new URLSearchParams(window.location.search).get('siteKey');
     console.log('iframe loaded, siteKey:', siteKey);
 
+    // Auto-execute as soon as grecaptcha is ready
+    function executeRecaptcha() {
+      grecaptcha.ready(function() {
+        console.log('grecaptcha ready, rendering...');
+        var widgetId = grecaptcha.render('captcha-container', {
+          sitekey: siteKey,
+          size: 'invisible',
+          callback: function(token) {
+            console.log('token received');
+            window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
+          },
+          'expired-callback': function() {
+            console.log('token expired, re-executing...');
+            grecaptcha.execute(widgetId);
+          },
+          'error-callback': function() {
+            console.log('captcha error');
+            window.parent.postMessage({ action: 'captchaError' }, '*');
+          }
+        });
+        grecaptcha.execute(widgetId);
+      });
+    }
+
     window.addEventListener('message', function(event) {
       console.log('message received:', event.data);
-      if (event.data && event.data.action === 'executeCaptcha') {
-        console.log('executing captcha...');
-        grecaptcha.ready(function() {
-          console.log('grecaptcha ready');
-          if (widgetId === undefined) {
-            widgetId = grecaptcha.render('captcha-container', {
-              sitekey: siteKey,
-              size: 'invisible',
-              callback: function(token) {
-                console.log('token received');
-                window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
-              },
-              'expired-callback': function() {
-                window.parent.postMessage({ action: 'captchaExpired' }, '*');
-              },
-              'error-callback': function() {
-                console.log('captcha error');
-                window.parent.postMessage({ action: 'captchaError' }, '*');
-              }
-            });
-          }
-          grecaptcha.execute(widgetId);
-        });
-      }
     });
+
+    // Auto-execute on load
+    executeRecaptcha();
   </script>
 </body>
 </html>
