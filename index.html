@@ -27,8 +27,8 @@
 // MAR 13            window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
             var msg = JSON.stringify({ action: 'captchaToken', token: token });
                try { window.parent.postMessage(msg, '*'); } catch(e) { console.log('parent failed:', e); }
-    try { window.parent.parent.postMessage(msg, '*'); } catch(e) { console.log('parent.parent failed:', e); }
-    try { window.top.postMessage(msg, '*'); } catch(e) { console.log('top failed:', e); }
+    //try { window.parent.parent.postMessage(msg, '*'); } catch(e) { console.log('parent.parent failed:', e); }
+    //try { window.top.postMessage(msg, '*'); } catch(e) { console.log('top failed:', e); }
 
             // end mar 13
           },
