@@ -25,7 +25,7 @@
           callback: function(token) {
             console.log('token received at:', new Date().toISOString());
 // MAR 13            window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
-            window.parent.postMessage(JSON.stringify({ action: 'captchaToken', token: token }), '*');
+            window.top.postMessage(JSON.stringify({ action: 'captchaToken', token: token }), '*');
           },
           'expired-callback': function() {
             console.log('token expired, re-executing...');
@@ -34,7 +34,7 @@
           'error-callback': function() {
             console.log('captcha error');
            // MAR 13 window.parent.postMessage({ action: 'captchaError' }, '*');
-            window.parent.postMessage(JSON.stringify({ action: 'captchaError' }), '*');
+            window.top.postMessage(JSON.stringify({ action: 'captchaError' }), '*');
           }
         });
         console.log('waiting before execute...');
