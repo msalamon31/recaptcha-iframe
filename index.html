@@ -25,7 +25,7 @@
           callback: function(token) {
             console.log('token received at:', new Date().toISOString());
 // MAR 13            window.parent.postMessage({ action: 'captchaToken', token: token }, '*');
-            Wwindow.parent.postMessage(JSON.stringify({ action: 'captchaToken', token: token }), '*');
+            window.parent.postMessage(JSON.stringify({ action: 'captchaToken', token: token }), '*');
           },
           'expired-callback': function() {
             console.log('token expired, re-executing...');
